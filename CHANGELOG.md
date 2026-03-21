@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0 (2026-03-21)
+
+
+### Features
+
+* initial commit ([5731cfd](https://github.com/acha666/sub-server/commit/5731cfdbaef3a33601a042b5e3ac19659fdebc1c))
+
 ## [0.2.0](https://github.com/acha666/sub-server/compare/sub-server-v0.1.0...sub-server-v0.2.0) (2026-03-21)
 
 
