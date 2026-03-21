@@ -1,0 +1,17 @@
+# Application settings
+# All settings here are optional and have sensible defaults
+
+# Application title displayed in API responses
+title: "sub-server"
+
+# HTTP cache control header
+# Common values:
+#   - "no-store": No caching (default)
+#   - "public, max-age=3600": Cache for 1 hour
+#   - "private, max-age=300": Private cache, 5 minutes
+cache_control: "no-store"
+
+# Trust proxy headers (X-Forwarded-For, X-Forwarded-Proto, etc.)
+# Set to true if running behind a reverse proxy like nginx or traefik
+trust_proxy_headers: true
+

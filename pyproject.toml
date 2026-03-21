@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sub-server"
+version = "0.2.0"
+description = "Fast and maintainable FastAPI subscription backend for multi-protocol share links"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+authors = [
+  {name = "A Cha"}
+]
+keywords = ["subscription", "fastapi", "vless", "vmess", "trojan", "shadowsocks", "proxy"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Web Environment",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: Proxy Servers",
+]
+dependencies = [
+  "fastapi>=0.115,<1.0",
+  "uvicorn[standard]>=0.30,<1.0",
+  "pydantic>=2.8,<3.0",
+  "PyYAML>=6.0,<7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/acha666/sub-server"
+Documentation = "https://github.com/acha666/sub-server#readme"
+Repository = "https://github.com/acha666/sub-server.git"
+Issues = "https://github.com/acha666/sub-server/issues"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<10.0",
+  "httpx>=0.27,<1.0",
+  "ruff>=0.6,<1.0",
+]
+
+[project.scripts]
+sub-server = "sub_server.main:run"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sub_server"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

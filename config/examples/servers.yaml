@@ -1,0 +1,80 @@
+servers:
+  - id: hk-vless-01
+    enabled: true
+    protocol: vless
+    name: HK VLESS Reality 01
+    tags: [public, hk, reality]
+    endpoint:
+      host: hk1.example.com
+      port: 443
+    auth:
+      uuid: "11111111-2222-0000-3333-444444444444"
+    tls:
+      mode: reality
+      sni: www.microsoft.com
+      alpn: [h2, http/1.1]
+      fp: chrome
+      reality:
+        public_key: YOUR_REALITY_PUBLIC_KEY
+        short_id: 6ba85179e30d4fc2
+    transport:
+      type: tcp
+    options:
+      flow: xtls-rprx-vision
+
+  - id: jp-vmess-01
+    enabled: true
+    protocol: vmess
+    name: JP VMess WS TLS 01
+    tags: [public, jp, ws]
+    endpoint:
+      host: jp1.example.com
+      port: 443
+    auth:
+      uuid: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+      alterId: 0
+    tls:
+      mode: tls
+      sni: cdn.example.com
+      alpn: [h2, http/1.1]
+      fp: chrome
+    transport:
+      type: ws
+      host: cdn.example.com
+      path: /vmess
+      headerType: none
+    options:
+      scy: auto
+
+  - id: sg-trojan-01
+    enabled: true
+    protocol: trojan
+    name: SG Trojan 01
+    tags: [private, sg, tls]
+    endpoint:
+      host: sg1.example.com
+      port: 443
+    auth:
+      password: CHANGE_ME_TROJAN_PASSWORD
+    tls:
+      mode: tls
+      sni: sg.example.com
+      alpn: [h2, http/1.1]
+      fp: chrome
+    transport:
+      type: tcp
+    options: {}
+
+  - id: us-ss-01
+    enabled: true
+    protocol: shadowsocks
+    name: US SS 01
+    tags: [public, us, ss]
+    endpoint:
+      host: us1.example.com
+      port: 8388
+    auth:
+      method: aes-256-gcm
+      password: CHANGE_ME_SS_PASSWORD
+    options:
+      plugin: v2ray-plugin;tls;host=cdn.example.com

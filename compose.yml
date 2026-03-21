@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  sub-server:
+    # Build image from local Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    # Container configuration
+    container_name: sub-server
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      # Configuration directory inside the container
+      SUB_SERVER_CONFIG_DIR: /config
+    
+    # Volume mounts
+    volumes:
+      # Mount example configs as read-only
+      # Replace with your own ./config directory containing:
+      #   - servers.yaml: server definitions
+      #   - keys.yaml: subscription keys
+      - ./config/examples:/config:ro
+    
+    # Port mapping
+    ports:
+      # HTTP port
+      - "80:80"
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Optional: Network configuration
+# Remove the networks section below if you don't need custom networking
+# networks:
+#   sub-network:
+#     driver: bridge

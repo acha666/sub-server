@@ -1,0 +1,37 @@
+keys:
+  demo-public:
+    enabled: true
+    output:
+      format: base64
+      include_key_in_name: false
+    select:
+      include_tags: [public]
+      exclude_ids: []
+      exclude_tags: []
+      include_ids: []
+    overrides:
+      hk-vless-01:
+        patch:
+          routing:
+            vless_route: 14
+      jp-vmess-01:
+        patch:
+          name: JP VMess UserA
+          transport:
+            path: /vmess-usera
+
+  demo-private:
+    enabled: true
+    output:
+      format: raw
+      include_key_in_name: true
+    select:
+      include_tags: [private]
+      exclude_ids: []
+      exclude_tags: []
+      include_ids: []
+    overrides:
+      sg-trojan-01:
+        patch:
+          auth:
+            password: PRIVATE_PASSWORD_FOR_USER_A
