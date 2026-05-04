@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/acha666/sub-server/compare/sub-server-v0.1.0...sub-server-v0.1.1) (2026-05-04)
+
+
+### Bug Fixes
+
+* **devcontainer:** specify moby option for docker-in-docker feature ([4abe0f8](https://github.com/acha666/sub-server/commit/4abe0f86b46aba292c55201899bac00eb81d7941))
+* **main:** improve error handling during startup and request processing ([ef5a2d6](https://github.com/acha666/sub-server/commit/ef5a2d69183c0cab68af9582f2674cca7914320a))
+
 ## 0.1.0 (2026-03-21)
 
 
