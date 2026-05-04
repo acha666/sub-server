@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import time
+import sys
 
 import uvicorn
 from fastapi import FastAPI, Request
@@ -32,7 +33,16 @@ app = FastAPI(title=settings.title)
 
 @app.on_event("startup")
 def on_startup() -> None:
-    config_store.get()
+    try:
+        config_store.get()
+    except ConfigError as exc:
+        # Log a concise startup error (no traceback) and exit
+        logger.error("startup config error: %s", exc)
+        sys.exit(1)
+    except Exception as exc:
+        # Unexpected startup error: log concise message and exit
+        logger.error("unexpected startup error: %s", exc)
+        sys.exit(1)
 
 
 @app.middleware("http")
@@ -55,22 +65,34 @@ async def access_log(request: Request, call_next):
 
 @app.exception_handler(SubscriptionKeyNotFoundError)
 def handle_key_not_found(_: Request, exc: SubscriptionKeyNotFoundError) -> JSONResponse:
+    logger.info("subscription key not found: %s", exc)
     return JSONResponse(status_code=404, content={"detail": f"subscription key not found: {exc}"})
 
 
 @app.exception_handler(ConfigError)
 def handle_config_error(_: Request, exc: ConfigError) -> JSONResponse:
+    logger.error("config error: %s", exc)
     return JSONResponse(status_code=500, content={"detail": str(exc)})
 
 
 @app.exception_handler(UnsupportedProtocolError)
 def handle_unsupported_protocol(_: Request, exc: UnsupportedProtocolError) -> JSONResponse:
+    logger.info("unsupported protocol: %s", exc)
     return JSONResponse(status_code=400, content={"detail": f"unsupported protocol: {exc}"})
 
 
 @app.exception_handler(NotImplementedError)
 def handle_not_implemented(_: Request, exc: NotImplementedError) -> JSONResponse:
+    logger.info("not implemented: %s", exc)
     return JSONResponse(status_code=400, content={"detail": str(exc)})
+
+
+@app.exception_handler(Exception)
+def handle_unhandled_exception(_: Request, exc: Exception) -> JSONResponse:
+    # Catch-all for unexpected errors during request handling.
+    # Log a short message so we don't produce huge tracebacks in production logs.
+    logger.error("internal error: %s", exc)
+    return JSONResponse(status_code=500, content={"detail": "internal server error"})
 
 
 def build_resolver() -> ConfigResolver:
@@ -93,4 +115,3 @@ def run() -> None:
 
 if __name__ == "__main__":
     run()
-
