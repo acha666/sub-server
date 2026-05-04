@@ -39,7 +39,7 @@ Issues = "https://github.com/acha666/sub-server/issues"
 [project.optional-dependencies]
 dev = [
   "pytest>=8.3,<10.0",
-  "httpx>=0.27,<1.0",
+  "httpx>=0.28.1,<1.0",
   "ruff>=0.6,<1.0",
 ]
 
