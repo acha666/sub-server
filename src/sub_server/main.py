@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import logging
-import time
 import sys
+import time
 
 import uvicorn
 from fastapi import FastAPI, Request
