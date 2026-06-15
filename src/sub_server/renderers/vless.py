@@ -17,11 +17,11 @@ class VlessRenderer(ShareLinkRenderer):
         if server.routing and server.routing.vless_route is not None:
             uuid_value = inject_vless_route(uuid_value, server.routing.vless_route)
 
-        params: list[tuple[str, str]] = [("encryption", "none")]
-
         tls = server.tls
         transport = server.transport
         options = server.options or {}
+        encryption = options.get("encryption") or "none"
+        params: list[tuple[str, str]] = [("encryption", str(encryption))]
 
         if tls and tls.mode:
             params.append(("security", tls.mode))
@@ -55,7 +55,7 @@ class VlessRenderer(ShareLinkRenderer):
             params.append(("headerType", transport.header_type))
 
         for key_name in sorted(options.keys()):
-            if key_name in {"flow"}:
+            if key_name in {"encryption", "flow"}:
                 continue
             value = options[key_name]
             if value is None or value == "":
