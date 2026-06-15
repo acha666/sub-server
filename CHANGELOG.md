@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/acha666/sub-server/compare/sub-server-v0.1.1...sub-server-v0.2.0) (2026-06-15)
+
+
+### Features
+
+* fix vless encryption ([a906723](https://github.com/acha666/sub-server/commit/a906723313842b167f6d7980114b519decaf9e0a))
+
 ## [0.1.1](https://github.com/acha666/sub-server/compare/sub-server-v0.1.0...sub-server-v0.1.1) (2026-05-04)
 
 
