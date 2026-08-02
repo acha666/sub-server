@@ -5,6 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Release Please updates this file from Conventional Commits merged into `main`.
 
+## [0.2.1](https://github.com/acha666/sub-server/compare/sub-server-v0.2.0...sub-server-v0.2.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* harden configuration and share-link handling ([016c952](https://github.com/acha666/sub-server/commit/016c952ec9636b29568ef399f04f832a14c1bc2d))
+
 ## [0.2.0] - 2026-06-15
 
 ### Added
