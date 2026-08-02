@@ -25,7 +25,7 @@ A small but maintainable FastAPI subscription backend for multi-protocol share l
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-uvicorn sub_server.main:app --reload
+sub-server
 ```
 
 By default, the app will try to read config from:
@@ -33,6 +33,8 @@ By default, the app will try to read config from:
 1. `SUB_SERVER_CONFIG_DIR`
 2. `/config`
 3. `./config/examples`
+
+`SUB_SERVER_HOST` and `SUB_SERVER_PORT` override the bind address and port.
 
 Open:
 
@@ -50,4 +52,8 @@ Prepare your own `./config/servers.yaml` and `./config/keys.yaml` before product
 
 ## Documentation
 
-See `docs/`.
+- [Quick start](docs/quickstart.md)
+- [Configuration](docs/configuration/settings.md)
+- [Protocol support](docs/protocols/matrix.md)
+- [Container deployment](docs/container.md)
+- [Changelog](CHANGELOG.md)

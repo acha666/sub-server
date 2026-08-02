@@ -55,7 +55,7 @@ ruff format .
 pytest -q
 
 # Run development server
-uvicorn sub_server.main:app --reload
+sub-server
 ```
 
 ## Design Layers

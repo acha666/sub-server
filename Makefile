@@ -34,7 +34,7 @@ test:
 check: lint test
 
 run:
-	uvicorn sub_server.main:app --reload --host 0.0.0.0 --port 8000
+	sub-server
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true

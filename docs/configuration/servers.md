@@ -19,8 +19,8 @@ servers:
 ## Core fields
 
 - `id`: internal unique server identifier
-- `enabled`: whether the server participates in selection
-- `protocol`: `vless`, `vmess`, `trojan`, or `shadowsocks` in this first version
+- `enabled`: required switch controlling whether the server participates in selection
+- `protocol`: `vless`, `vmess`, `trojan`, or `shadowsocks`
 - `name`: display name in generated links
 - `tags`: free-form labels for include/exclude matching
 - `endpoint.host`, `endpoint.port`: target server address
@@ -29,3 +29,8 @@ servers:
 - `transport`: transport-specific fields such as `type`, `host`, `path`
 - `routing`: protocol-specific routing helpers, currently `vless_route`
 - `options`: additional protocol-specific query fields
+
+## Validation
+
+Ports must be in the range `1..65535`. UUIDs, credentials, Reality settings, and VLESS
+routing values are validated when configuration is loaded.

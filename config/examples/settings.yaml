@@ -11,7 +11,23 @@ title: "sub-server"
 #   - "private, max-age=300": Private cache, 5 minutes
 cache_control: "no-store"
 
-# Trust proxy headers (X-Forwarded-For, X-Forwarded-Proto, etc.)
-# Set to true if running behind a reverse proxy like nginx or traefik
+# Bind address and port. SUB_SERVER_HOST and SUB_SERVER_PORT override these values.
+host: "0.0.0.0"
+port: 8000
+
+# Trust X-Forwarded-For and X-Forwarded-Proto only when the direct peer belongs
+# to trusted_proxy_ips. Disable this if the service never runs behind a proxy.
 trust_proxy_headers: true
+
+# Loopback, RFC1918 LAN / Docker networks, and IPv4 / IPv6 link-local networks.
+# Narrow this list to the actual reverse-proxy network when possible.
+trusted_proxy_ips:
+  - "127.0.0.1"
+  - "::1"
+  - "10.0.0.0/8"
+  - "172.16.0.0/12"
+  - "192.168.0.0/16"
+  - "169.254.0.0/16"
+  - "fc00::/7"
+  - "fe80::/10"
 

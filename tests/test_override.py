@@ -12,3 +12,10 @@ def test_apply_vless_route_patch() -> None:
     server = loader.load_servers().servers[0]
     patched = apply_server_patch(server, {"routing": {"vless_route": 14}})
     assert patched.auth.uuid.split("-")[2] == "000e"
+
+
+def test_override_can_clear_optional_routing() -> None:
+    loader = ConfigLoader(CONFIG_DIR)
+    server = loader.load_servers().servers[0]
+    patched = apply_server_patch(server, {"routing": None})
+    assert patched.routing is None

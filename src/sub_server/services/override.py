@@ -28,11 +28,12 @@ def apply_server_patch(server: ServerConfig, patch: dict[str, Any]) -> ServerCon
     base = server.model_dump(by_alias=True, exclude_none=True)
     merged = deep_merge(base, _apply_vless_helper(patch))
 
-    route = merged.get("routing", {}).get("vless_route")
-    uuid_value = merged.get("auth", {}).get("uuid")
+    routing = merged.get("routing")
+    auth = merged.get("auth")
+    route = routing.get("vless_route") if isinstance(routing, dict) else None
+    uuid_value = auth.get("uuid") if isinstance(auth, dict) else None
     if route is not None and uuid_value:
-        merged["auth"]["uuid"] = inject_vless_route(uuid_value, route)
-        merged["auth"].pop("_vless_route_helper", None)
+        auth["uuid"] = inject_vless_route(uuid_value, route)
+        auth.pop("_vless_route_helper", None)
 
     return ServerConfig.model_validate(merged)
-

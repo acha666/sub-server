@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import logging
-import sys
 import time
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, Request
@@ -28,35 +28,35 @@ config_store = ConfigStore(settings.config_dir)
 subscription_service = SubscriptionService()
 
 
-app = FastAPI(title=settings.title)
-
-
-@app.on_event("startup")
-def on_startup() -> None:
+@asynccontextmanager
+async def lifespan(_: FastAPI):
     try:
-        config_store.get()
+        build_resolver()
     except ConfigError as exc:
-        # Log a concise startup error (no traceback) and exit
         logger.error("startup config error: %s", exc)
-        sys.exit(1)
+        raise
     except Exception as exc:
-        # Unexpected startup error: log concise message and exit
         logger.error("unexpected startup error: %s", exc)
-        sys.exit(1)
+        raise
+    yield
+
+
+app = FastAPI(title=settings.title, lifespan=lifespan)
 
 
 @app.middleware("http")
 async def access_log(request: Request, call_next):
-    start = time.time()
+    start = time.perf_counter()
     response = await call_next(request)
-    duration_ms = int((time.time() - start) * 1000)
-    forwarded = request.headers.get("x-forwarded-for")
-    client_ip = forwarded or (request.client.host if request.client else "-")
+    duration_ms = int((time.perf_counter() - start) * 1000)
+    route = request.scope.get("route")
+    path = getattr(route, "path", "<unmatched>")
+    client_ip = request.client.host if request.client else "-"
     logger.info(
         'client="%s" method=%s path="%s" status=%s ms=%s',
         client_ip,
         request.method,
-        request.url.path,
+        path,
         response.status_code,
         duration_ms,
     )
@@ -64,15 +64,15 @@ async def access_log(request: Request, call_next):
 
 
 @app.exception_handler(SubscriptionKeyNotFoundError)
-def handle_key_not_found(_: Request, exc: SubscriptionKeyNotFoundError) -> JSONResponse:
-    logger.info("subscription key not found: %s", exc)
-    return JSONResponse(status_code=404, content={"detail": f"subscription key not found: {exc}"})
+def handle_key_not_found(_: Request, __: SubscriptionKeyNotFoundError) -> JSONResponse:
+    logger.info("subscription key not found")
+    return JSONResponse(status_code=404, content={"detail": "subscription key not found"})
 
 
 @app.exception_handler(ConfigError)
 def handle_config_error(_: Request, exc: ConfigError) -> JSONResponse:
     logger.error("config error: %s", exc)
-    return JSONResponse(status_code=500, content={"detail": str(exc)})
+    return JSONResponse(status_code=500, content={"detail": "invalid server configuration"})
 
 
 @app.exception_handler(UnsupportedProtocolError)
@@ -110,7 +110,14 @@ app.include_router(public_router)
 
 
 def run() -> None:
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        app,
+        host=settings.host,
+        port=settings.port,
+        proxy_headers=settings.trust_proxy_headers,
+        forwarded_allow_ips=settings.forwarded_allow_ips,
+        access_log=False,
+    )
 
 
 if __name__ == "__main__":

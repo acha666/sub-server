@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from sub_server.models.server import ServerConfig
 from sub_server.renderers.base import ShareLinkRenderer
-from sub_server.utils.url import encode_fragment, urlencode_items
+from sub_server.renderers.common import append_options, common_query_params, display_name
+from sub_server.utils.url import (
+    encode_fragment,
+    encode_userinfo,
+    format_uri_host,
+    urlencode_items,
+)
 
 
 class TrojanRenderer(ShareLinkRenderer):
@@ -12,35 +18,16 @@ class TrojanRenderer(ShareLinkRenderer):
         if not server.auth.password:
             raise ValueError(f"server {server.id} missing auth.password for trojan")
 
-        params: list[tuple[str, str]] = []
-        tls = server.tls
-        transport = server.transport
+        params = common_query_params(server)
         options = server.options or {}
 
-        if tls and tls.sni:
-            params.append(("sni", tls.sni))
-        if tls and tls.alpn:
-            params.append(("alpn", ",".join(tls.alpn)))
-        if tls and tls.fp:
-            params.append(("fp", tls.fp))
-        if transport and transport.type:
-            params.append(("type", transport.type))
-        if transport and transport.host:
-            params.append(("host", transport.host))
-        if transport and transport.path:
-            params.append(("path", transport.path))
-        for key_name in sorted(options.keys()):
-            value = options[key_name]
-            if value is None or value == "":
-                continue
-            params.append((key_name, str(value)))
-
-        remark = server.name if not include_key_in_name or not key else f"{server.name} [{key}]"
+        append_options(params, options)
+        remark = display_name(server, include_key_in_name, key)
         query = urlencode_items(params)
         fragment = encode_fragment(remark)
         suffix = f"?{query}" if query else ""
         return (
-            f"trojan://{server.auth.password}@{server.endpoint.host}:{server.endpoint.port}"
+            f"trojan://{encode_userinfo(server.auth.password)}@"
+            f"{format_uri_host(server.endpoint.host)}:{server.endpoint.port}"
             f"{suffix}#{fragment}"
         )
-

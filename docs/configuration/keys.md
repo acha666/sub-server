@@ -21,6 +21,14 @@ keys:
             vless_route: 14
 ```
 
+## Key names
+
+Key names form the `/{key}` subscription route. They must be non-empty, must not contain
+`/` or use dot segments, and must not collide with `healthz`, `docs`, `redoc`, or
+`openapi.json`.
+
+Every key rule must explicitly set `enabled`.
+
 ## Selection order
 
 1. Start from all enabled servers
@@ -32,3 +40,6 @@ keys:
 
 - `base64`: multi-line share links wrapped in one base64 blob
 - `raw`: plain multi-line share links
+
+When `include_key_in_name` is enabled, the subscription key is appended to every node name
+and becomes visible in the imported client configuration.

@@ -2,6 +2,8 @@
 
 Overrides are applied as deep merge patches.
 
+Optional sections such as `routing`, `tls`, and `transport` may be replaced with `null`.
+
 Example:
 
 ```yaml

@@ -7,6 +7,8 @@ from pydantic import Field, field_validator
 from sub_server.models.common import FlexibleBaseModel
 from sub_server.models.enums import OutputFormat
 
+RESERVED_KEY_NAMES = frozenset({"healthz", "docs", "redoc", "openapi.json"})
+
 
 class KeyOutputConfig(FlexibleBaseModel):
     format: OutputFormat = OutputFormat.BASE64
@@ -25,7 +27,7 @@ class ServerOverride(FlexibleBaseModel):
 
 
 class KeyRule(FlexibleBaseModel):
-    enabled: bool = True
+    enabled: bool
     output: KeyOutputConfig = Field(default_factory=KeyOutputConfig)
     select: KeySelectConfig = Field(default_factory=KeySelectConfig)
     overrides: dict[str, ServerOverride] = Field(default_factory=dict)
@@ -38,7 +40,16 @@ class KeysFile(FlexibleBaseModel):
     @classmethod
     def validate_keys(cls, value: dict[str, KeyRule]) -> dict[str, KeyRule]:
         for key in value:
-            if "/" in key or not key.strip():
-                raise ValueError("key names must be non-empty and may not contain '/'")
+            normalized = key.strip()
+            if (
+                "/" in key
+                or not normalized
+                or key != normalized
+                or normalized in {".", ".."}
+                or normalized.casefold() in RESERVED_KEY_NAMES
+            ):
+                raise ValueError(
+                    "key names must be non-empty, may not contain '/', "
+                    "and may not use reserved paths"
+                )
         return value
-

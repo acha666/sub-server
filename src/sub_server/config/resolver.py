@@ -37,6 +37,14 @@ class ConfigResolver:
                     raise ConfigError(
                         f"key '{key_name}' override references unknown server id '{server_id}'"
                     )
+                try:
+                    apply_server_patch(
+                        self.server_map[server_id], key_rule.overrides[server_id].patch
+                    )
+                except Exception as exc:
+                    raise ConfigError(
+                        f"key '{key_name}' has an invalid override for server '{server_id}'"
+                    ) from exc
 
     def resolve_key(self, key: str) -> ResolvedSubscription:
         key_rule = self.keys.get(key)
@@ -52,4 +60,3 @@ class ConfigResolver:
             else:
                 final_servers.append(server)
         return ResolvedSubscription(key=key, key_rule=key_rule, servers=final_servers)
-

@@ -3,18 +3,15 @@ from __future__ import annotations
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
 
-from sub_server.core.settings import get_settings
-
 router = APIRouter()
 
 
 @router.get("/")
-def root() -> JSONResponse:
-    settings = get_settings()
+def root(request: Request) -> JSONResponse:
+    settings = request.app.state.settings
     return JSONResponse(
         {
             "service": settings.title,
-            "config_dir": str(settings.config_dir),
             "usage": "GET /{key} or /{key}?raw=1",
         }
     )
@@ -31,4 +28,3 @@ def get_subscription(request: Request, key: str, raw: int = 0) -> PlainTextRespo
             "X-Subscription-Servers": str(len(resolved.servers)),
         },
     )
-

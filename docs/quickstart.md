@@ -4,12 +4,12 @@
 
 ```bash
 pip install -e ".[dev]"
-uvicorn sub_backend.main:app --reload
+sub-server
 ```
 
 ## Config resolution order
 
-1. `SUB_BACKEND_CONFIG_DIR`
+1. `SUB_SERVER_CONFIG_DIR`
 2. `/config`
 3. `config/examples`
 
