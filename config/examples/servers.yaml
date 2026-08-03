@@ -11,12 +11,12 @@ servers:
       uuid: "11111111-2222-0000-3333-444444444444"
     tls:
       mode: reality
-      sni: www.microsoft.com
+      sni: www.example.com
       alpn: [h2, http/1.1]
       fp: chrome
       reality:
         public_key: YOUR_REALITY_PUBLIC_KEY
-        short_id: 6ba85179e30d4fc2
+        short_id: "0000000000000000"
     transport:
       type: tcp
     options:
@@ -45,6 +45,14 @@ servers:
       headerType: none
     options:
       scy: auto
+
+  - id: hk-vless-route-14
+    extends: hk-vless-01
+    enabled: false
+    name: HK VLESS Route 14
+    tags: [private, hk, reality, routed]
+    routing:
+      vless_route: 14
 
   - id: sg-trojan-01
     enabled: true

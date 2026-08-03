@@ -11,7 +11,7 @@ CONFIG_DIR = ROOT / "config" / "examples"
 
 def test_shadowsocks_renderer() -> None:
     loader = ConfigLoader(CONFIG_DIR)
-    server = loader.load_servers().servers[3]
+    server = next(server for server in loader.load_servers().servers if server.id == "us-ss-01")
     line = ShadowsocksRenderer().render(server)
     assert line.startswith("ss://")
     assert "plugin=" in line

@@ -11,4 +11,3 @@ class FlexibleBaseModel(BaseModel):
 
 def dump_excluding_none(model: BaseModel) -> dict[str, Any]:
     return model.model_dump(exclude_none=True)
-

@@ -31,7 +31,7 @@ pip install -e ".[dev]"
 ```bash
 make help        # Show all available commands
 make dev-install # Install development dependencies
-make lint        # Run rinter checks
+make lint        # Run lint and formatting checks
 make lint-fix    # Fix auto-fixable lint issues
 make test        # Run tests
 make check       # Run all checks (lint and tests)
@@ -44,6 +44,7 @@ make clean       # Clean cache and build artifacts
 ```bash
 # Linting
 ruff check .
+ruff format --check .
 
 # Auto-fix lint issues
 ruff check . --fix

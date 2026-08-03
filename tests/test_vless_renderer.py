@@ -19,6 +19,23 @@ def test_vless_renderer_injects_route() -> None:
     assert line.startswith("vless://")
 
 
+def test_vless_route_is_applied_to_the_effective_overridden_uuid() -> None:
+    loader = ConfigLoader(CONFIG_DIR)
+    server = loader.load_servers().servers[0]
+    server = apply_server_patch(
+        server,
+        {
+            "auth": {"uuid": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"},
+            "routing": {"vless_route": "000e"},
+        },
+    )
+
+    line = VlessRenderer().render(server)
+
+    assert line.startswith("vless://aaaaaaaa-bbbb-000e-dddd-eeeeeeeeeeee@")
+    assert server.auth.uuid == "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+
+
 def test_vless_renderer_uses_custom_encryption() -> None:
     loader = ConfigLoader(CONFIG_DIR)
     server = loader.load_servers().servers[0]
@@ -26,10 +43,7 @@ def test_vless_renderer_uses_custom_encryption() -> None:
         server,
         {
             "options": {
-                "encryption": (
-                    "mlkem768x25519plus.native.0rtt."
-                    "TEST_ONLY_PLACEHOLDER_PUBLIC_KEY"
-                )
+                "encryption": ("mlkem768x25519plus.native.0rtt.TEST_ONLY_PLACEHOLDER_PUBLIC_KEY")
             }
         },
     )

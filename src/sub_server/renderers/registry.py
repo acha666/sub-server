@@ -21,4 +21,3 @@ class RendererRegistry:
         if renderer is None:
             raise UnsupportedProtocolError(protocol)
         return renderer
-

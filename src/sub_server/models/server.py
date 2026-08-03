@@ -128,5 +128,34 @@ class ServerConfig(FlexibleBaseModel):
         return self
 
 
+class ServerDefinition(FlexibleBaseModel):
+    id: str
+    extends: str | None = None
+
+    @field_validator("id")
+    @classmethod
+    def validate_id(cls, value: str) -> str:
+        value = value.strip()
+        if "/" in value or not value:
+            raise ValueError("server id must be non-empty and may not contain '/'")
+        return value
+
+    @field_validator("extends")
+    @classmethod
+    def validate_extends(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        if not value:
+            raise ValueError("server extends must be a non-empty server id")
+        return value
+
+    def patch(self) -> dict[str, Any]:
+        data = self.model_dump(by_alias=True, exclude_unset=True)
+        data.pop("id")
+        data.pop("extends", None)
+        return data
+
+
 class ServersFile(FlexibleBaseModel):
     servers: list[ServerConfig]

@@ -14,4 +14,3 @@ def deep_merge(base: JsonMap, patch: JsonMap) -> JsonMap:
         else:
             result[key] = deepcopy(value)
     return result
-

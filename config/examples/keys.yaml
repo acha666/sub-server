@@ -1,9 +1,13 @@
 keys:
   demo-public:
     enabled: true
+    name: Public demo
     output:
       format: base64
       include_key_in_name: false
+      remark_nodes: |
+        ${key_name}
+        Updated ${datetime}
     select:
       include_tags: [public]
       exclude_ids: []
@@ -11,17 +15,16 @@ keys:
       include_ids: []
     overrides:
       hk-vless-01:
-        patch:
-          routing:
-            vless_route: 14
+        routing:
+          vless_route: 14
       jp-vmess-01:
-        patch:
-          name: JP VMess UserA
-          transport:
-            path: /vmess-usera
+        name: JP VMess ${key_name}
+        transport:
+          path: /vmess-usera
 
   demo-private:
     enabled: true
+    name: Private demo
     output:
       format: raw
       include_key_in_name: true
@@ -32,6 +35,10 @@ keys:
       include_ids: []
     overrides:
       sg-trojan-01:
-        patch:
-          auth:
-            password: PRIVATE_PASSWORD_FOR_USER_A
+        auth:
+          password: PRIVATE_PASSWORD_FOR_USER_A
+    servers:
+      - extends: sg-trojan-01
+        name: SG Trojan backup for ${key_name}
+        auth:
+          password: PRIVATE_PASSWORD_FOR_USER_B

@@ -3,6 +3,9 @@
 Mount a config directory into `/config` and expose the container behind Traefik or another
 reverse proxy. The repository root contains an example Compose file.
 
+The container listens on unprivileged port `8000`; the example Compose file maps host
+port `80` to it. The process runs as a non-root system user.
+
 ## Health check
 
 The image checks `/healthz`. This endpoint returns an unhealthy response when the current

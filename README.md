@@ -14,8 +14,10 @@ A small but maintainable FastAPI subscription backend for multi-protocol share l
 - Per-key selection rules:
   - include / exclude by id
   - include / exclude by tag
-  - per-server deep patch overrides
+  - per-server deep overrides
+- Reusable server definitions and key-local anonymous server instances
 - VLESS-specific `routing.vless_route` helper that rewrites UUID bytes 7 and 8 via the third UUID segment
+- Template variables and optional remark nodes at the head of subscriptions
 - Base64 or raw subscription output
 - Docker, Compose, GitHub Actions CI, docs, and tests included
 
@@ -54,6 +56,9 @@ Prepare your own `./config/servers.yaml` and `./config/keys.yaml` before product
 
 - [Quick start](docs/quickstart.md)
 - [Configuration](docs/configuration/settings.md)
+- [Servers and reuse](docs/configuration/servers.md)
+- [Keys and subscription assembly](docs/configuration/keys.md)
+- [Template variables](docs/configuration/templates.md)
 - [Protocol support](docs/protocols/matrix.md)
 - [Container deployment](docs/container.md)
 - [Changelog](CHANGELOG.md)

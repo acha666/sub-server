@@ -11,7 +11,7 @@ CONFIG_DIR = ROOT / "config" / "examples"
 
 def test_trojan_renderer() -> None:
     loader = ConfigLoader(CONFIG_DIR)
-    server = loader.load_servers().servers[2]
+    server = next(server for server in loader.load_servers().servers if server.id == "sg-trojan-01")
     line = TrojanRenderer().render(server)
     assert line.startswith("trojan://")
     assert "security=tls" in line

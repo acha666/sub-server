@@ -6,7 +6,8 @@ import yaml
 
 from sub_server.core.exceptions import ConfigError
 from sub_server.models.keyrule import KeysFile
-from sub_server.models.server import ServersFile
+from sub_server.models.server import ServerDefinition, ServersFile
+from sub_server.services.override import resolve_server_definitions
 
 
 class ConfigLoader:
@@ -25,7 +26,14 @@ class ConfigLoader:
 
     def load_servers(self) -> ServersFile:
         try:
-            return ServersFile.model_validate(self._read_yaml("servers.yaml"))
+            data = self._read_yaml("servers.yaml")
+            raw_servers = data.get("servers")
+            if not isinstance(raw_servers, list):
+                raise ValueError("servers must be a list")
+            definitions = [
+                ServerDefinition.model_validate(definition) for definition in raw_servers
+            ]
+            return ServersFile(servers=resolve_server_definitions(definitions))
         except Exception as exc:  # noqa: BLE001
             raise ConfigError(f"failed to load servers.yaml: {exc}") from exc
 
@@ -34,4 +42,3 @@ class ConfigLoader:
             return KeysFile.model_validate(self._read_yaml("keys.yaml"))
         except Exception as exc:  # noqa: BLE001
             raise ConfigError(f"failed to load keys.yaml: {exc}") from exc
-

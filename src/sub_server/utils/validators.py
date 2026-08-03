@@ -32,4 +32,3 @@ def inject_vless_route(uuid_str: str, route: int | str) -> str:
     parts = normalize_uuid(uuid_str).split("-")
     parts[2] = f"{parse_vless_route(route):04x}"
     return "-".join(parts)
-

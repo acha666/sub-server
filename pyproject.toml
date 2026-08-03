@@ -9,9 +9,6 @@ description = "Fast and maintainable FastAPI subscription backend for multi-prot
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.12"
-authors = [
-  {name = "A Cha"}
-]
 keywords = ["subscription", "fastapi", "vless", "vmess", "trojan", "shadowsocks", "proxy"]
 classifiers = [
   "Development Status :: 3 - Alpha",

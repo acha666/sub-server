@@ -8,4 +8,3 @@ class SubscriptionKeyNotFoundError(Exception):
 
 class UnsupportedProtocolError(Exception):
     """Raised when no renderer exists for a protocol."""
-

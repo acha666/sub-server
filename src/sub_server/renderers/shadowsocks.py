@@ -24,9 +24,7 @@ class ShadowsocksRenderer(ShareLinkRenderer):
                 f"{encode_userinfo(server.auth.method)}:{encode_userinfo(server.auth.password)}"
             )
         else:
-            userinfo = b64encode_urlsafe_no_padding(
-                f"{server.auth.method}:{server.auth.password}"
-            )
+            userinfo = b64encode_urlsafe_no_padding(f"{server.auth.method}:{server.auth.password}")
         params: list[tuple[str, str]] = []
         plugin = server.options.get("plugin")
         if plugin:

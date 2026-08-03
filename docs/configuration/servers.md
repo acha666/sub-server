@@ -1,6 +1,6 @@
 # servers.yaml
 
-Top-level shape:
+`servers.yaml` contains reusable, named server definitions:
 
 ```yaml
 servers:
@@ -18,19 +18,45 @@ servers:
 
 ## Core fields
 
-- `id`: internal unique server identifier
-- `enabled`: required switch controlling whether the server participates in selection
+- `id`: unique internal identifier
+- `enabled`: switch controlling whether the server participates in selection
 - `protocol`: `vless`, `vmess`, `trojan`, or `shadowsocks`
-- `name`: display name in generated links
-- `tags`: free-form labels for include/exclude matching
-- `endpoint.host`, `endpoint.port`: target server address
-- `auth`: protocol-specific identity fields
-- `tls`: TLS / Reality related fields
-- `transport`: transport-specific fields such as `type`, `host`, `path`
-- `routing`: protocol-specific routing helpers, currently `vless_route`
-- `options`: additional protocol-specific query fields
+- `name`: node name in generated links; [template variables](templates.md) are supported
+- `tags`: labels used by key selection
+- `endpoint.host`, `endpoint.port`: target address
+- `auth`: protocol-specific identity
+- `tls`: TLS and Reality settings
+- `transport`: transport settings such as `type`, `host`, and `path`
+- `routing`: protocol-specific routing helpers
+- `options`: additional protocol query fields
 
-## Validation
+Ports, credentials, Reality settings, and routing values are validated after inheritance is
+resolved.
 
-Ports must be in the range `1..65535`. UUIDs, credentials, Reality settings, and VLESS
-routing values are validated when configuration is loaded.
+## Derived servers
+
+A named server can inherit another server and specify only the facts that differ:
+
+```yaml
+servers:
+  - id: la
+    enabled: true
+    protocol: vless
+    name: Los Angeles
+    tags: [us, vless]
+    endpoint:
+      host: la.example.com
+      port: 443
+    auth:
+      uuid: 11111111-2222-0000-3333-444444444444
+
+  - id: la-route-14
+    extends: la
+    name: Los Angeles route 14
+    routing:
+      vless_route: 14
+```
+
+Fields in the derived definition are deep-merged onto the parent. Nested values can be
+cleared with `null`. References may point forward or backward in the file; unknown
+references and inheritance cycles are rejected.

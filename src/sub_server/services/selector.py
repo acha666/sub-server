@@ -37,4 +37,3 @@ def select_servers_for_key(
             continue
         result.append(server)
     return result
-

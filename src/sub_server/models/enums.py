@@ -11,4 +11,3 @@ class ProtocolType(StrEnum):
 class OutputFormat(StrEnum):
     BASE64 = "base64"
     RAW = "raw"
-

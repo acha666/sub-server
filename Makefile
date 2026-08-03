@@ -21,6 +21,7 @@ dev-install:
 
 lint:
 	ruff check .
+	ruff format --check .
 
 lint-fix:
 	ruff check . --fix

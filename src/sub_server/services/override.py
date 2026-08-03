@@ -1,39 +1,65 @@
 from __future__ import annotations
 
-from copy import deepcopy
 from typing import Any
 
-from sub_server.models.server import ServerConfig
+from sub_server.core.exceptions import ConfigError
+from sub_server.models.server import ServerConfig, ServerDefinition
 from sub_server.utils.deepmerge import deep_merge
-from sub_server.utils.validators import inject_vless_route
 
 
-def _apply_vless_helper(patch: dict[str, Any]) -> dict[str, Any]:
-    patch_copy = deepcopy(patch)
-    routing = patch_copy.get("routing")
-    auth = patch_copy.get("auth")
-    if isinstance(routing, dict) and routing.get("vless_route") is not None:
-        route = routing["vless_route"]
-        if not isinstance(auth, dict):
-            auth = {}
-            patch_copy["auth"] = auth
-        uuid_value = auth.get("uuid")
-        auth["_vless_route_helper"] = route
-        if uuid_value is not None:
-            auth["uuid"] = inject_vless_route(uuid_value, route)
-    return patch_copy
-
-
-def apply_server_patch(server: ServerConfig, patch: dict[str, Any]) -> ServerConfig:
+def apply_server_patch(
+    server: ServerConfig,
+    patch: dict[str, Any],
+    *,
+    server_id: str | None = None,
+) -> ServerConfig:
     base = server.model_dump(by_alias=True, exclude_none=True)
-    merged = deep_merge(base, _apply_vless_helper(patch))
-
-    routing = merged.get("routing")
-    auth = merged.get("auth")
-    route = routing.get("vless_route") if isinstance(routing, dict) else None
-    uuid_value = auth.get("uuid") if isinstance(auth, dict) else None
-    if route is not None and uuid_value:
-        auth["uuid"] = inject_vless_route(uuid_value, route)
-        auth.pop("_vless_route_helper", None)
-
+    merged = deep_merge(base, patch)
+    merged["id"] = server_id or server.id
     return ServerConfig.model_validate(merged)
+
+
+def resolve_server_definitions(
+    definitions: list[ServerDefinition],
+) -> list[ServerConfig]:
+    definition_map: dict[str, ServerDefinition] = {}
+    for definition in definitions:
+        if definition.id in definition_map:
+            raise ConfigError(f"duplicate server id '{definition.id}'")
+        definition_map[definition.id] = definition
+
+    resolved: dict[str, ServerConfig] = {}
+    resolving: list[str] = []
+
+    def resolve(server_id: str) -> ServerConfig:
+        if server_id in resolved:
+            return resolved[server_id]
+        definition = definition_map.get(server_id)
+        if definition is None:
+            raise ConfigError(f"unknown server id '{server_id}'")
+        if server_id in resolving:
+            cycle = " -> ".join([*resolving, server_id])
+            raise ConfigError(f"server inheritance cycle: {cycle}")
+
+        resolving.append(server_id)
+        try:
+            if definition.extends:
+                server = apply_server_patch(
+                    resolve(definition.extends),
+                    definition.patch(),
+                    server_id=definition.id,
+                )
+            else:
+                data = definition.model_dump(by_alias=True, exclude_unset=True)
+                data.pop("extends", None)
+                server = ServerConfig.model_validate(data)
+        except ConfigError:
+            raise
+        except Exception as exc:
+            raise ConfigError(f"invalid server '{server_id}': {exc}") from exc
+        finally:
+            resolving.pop()
+        resolved[server_id] = server
+        return server
+
+    return [resolve(definition.id) for definition in definitions]

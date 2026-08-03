@@ -5,14 +5,21 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  packages: write
+  contents: read
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      created: ${{ steps.release.outputs.release_created }}
+      sha: ${{ steps.release.outputs.sha }}
+      tag: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
     steps:
       - name: Run release-please
         id: release
@@ -20,14 +27,22 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  publish-image:
+    needs: release
+    if: ${{ needs.release.outputs.created == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
       - name: Checkout released commit
-        if: ${{ steps.release.outputs.release_created }}
         uses: actions/checkout@v7
         with:
-          ref: ${{ steps.release.outputs.sha }}
+          ref: ${{ needs.release.outputs.sha }}
+          persist-credentials: false
 
       - name: Login to GHCR
-        if: ${{ steps.release.outputs.release_created }}
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
@@ -35,15 +50,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push image
-        if: ${{ steps.release.outputs.release_created }}
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.release.outputs.tag_name }}
+            ghcr.io/${{ github.repository }}:${{ needs.release.outputs.tag }}
             ghcr.io/${{ github.repository }}:latest
           labels: |
-            org.opencontainers.image.version=${{ steps.release.outputs.version }}
-            org.opencontainers.image.revision=${{ steps.release.outputs.sha }}
+            org.opencontainers.image.version=${{ needs.release.outputs.version }}
+            org.opencontainers.image.revision=${{ needs.release.outputs.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          provenance: mode=max
+          sbom: true

@@ -8,4 +8,3 @@ def encode_subscription(text: str, output_format: OutputFormat) -> str:
     if output_format == OutputFormat.BASE64:
         return b64encode_text(text)
     raise ValueError(f"unsupported output format: {output_format}")
-
