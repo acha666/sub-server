@@ -5,6 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Release Please updates this file from Conventional Commits merged into `main`.
 
+## [0.3.1](https://github.com/acha666/sub-server/compare/sub-server-v0.3.0...sub-server-v0.3.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* use Buildx for image attestations ([997cf13](https://github.com/acha666/sub-server/commit/997cf13a004c82ae6e1a434702c740dbf405055b))
+
 ## [0.3.0](https://github.com/acha666/sub-server/compare/sub-server-v0.2.1...sub-server-v0.3.0) (2026-08-03)
 
 
