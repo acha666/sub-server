@@ -5,6 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Release Please updates this file from Conventional Commits merged into `main`.
 
+## [0.3.0](https://github.com/acha666/sub-server/compare/sub-server-v0.2.1...sub-server-v0.3.0) (2026-08-03)
+
+
+### Features
+
+* support reusable subscription servers ([abb64ce](https://github.com/acha666/sub-server/commit/abb64ceb6e55d6c7b7cd2f20652ab90813bc19fe))
+
 ## [0.2.1](https://github.com/acha666/sub-server/compare/sub-server-v0.2.0...sub-server-v0.2.1) (2026-08-02)
 
 
