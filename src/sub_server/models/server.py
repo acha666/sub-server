@@ -6,6 +6,7 @@ from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 
+from sub_server.config.xray import expand_outbound
 from sub_server.models.common import FlexibleBaseModel
 from sub_server.models.enums import ProtocolType
 from sub_server.utils.validators import parse_vless_route
@@ -85,6 +86,11 @@ class ServerConfig(FlexibleBaseModel):
     routing: RoutingConfig | None = None
     options: dict[str, Any] = Field(default_factory=dict)
 
+    @model_validator(mode="before")
+    @classmethod
+    def read_outbound(cls, data: Any) -> Any:
+        return expand_outbound(data) if isinstance(data, dict) else data
+
     @field_validator("id")
     @classmethod
     def validate_id(cls, value: str) -> str:
@@ -112,8 +118,9 @@ class ServerConfig(FlexibleBaseModel):
                 raise ValueError(f"{self.protocol.value} requires a valid auth.uuid") from exc
             if self.protocol == ProtocolType.VMESS and self.tls and self.tls.mode == "reality":
                 raise ValueError("the VMess base64 JSON format does not support reality TLS")
-        elif self.protocol == ProtocolType.TROJAN and not self.auth.password:
-            raise ValueError("trojan requires auth.password")
+        elif self.protocol in {ProtocolType.TROJAN, ProtocolType.HYSTERIA2}:
+            if not self.auth.password:
+                raise ValueError(f"{self.protocol.value} requires auth.password")
         elif self.protocol == ProtocolType.SHADOWSOCKS:
             if not self.auth.method or not self.auth.password:
                 raise ValueError("shadowsocks requires auth.method and auth.password")

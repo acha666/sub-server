@@ -6,6 +6,7 @@ class ProtocolType(StrEnum):
     VMESS = "vmess"
     TROJAN = "trojan"
     SHADOWSOCKS = "shadowsocks"
+    HYSTERIA2 = "hysteria2"
 
 
 class OutputFormat(StrEnum):

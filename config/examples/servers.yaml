@@ -86,3 +86,23 @@ servers:
       password: CHANGE_ME_SS_PASSWORD
     options:
       plugin: v2ray-plugin;tls;host=cdn.example.com
+
+  - id: us-hysteria2-01
+    enabled: true
+    name: US Hysteria 2 01
+    tags: [private, us, udp]
+    outbound:
+      protocol: hysteria
+      settings:
+        version: 2
+        address: us1.example.com
+        port: 443
+      streamSettings:
+        network: hysteria
+        security: tls
+        tlsSettings:
+          serverName: us1.example.com
+          alpn: [h3]
+        hysteriaSettings:
+          version: 2
+          auth: HYSTERIA-PASSWORD

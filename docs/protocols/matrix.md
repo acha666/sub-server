@@ -6,7 +6,7 @@
 | VMess         | implemented    | yes               |
 | Trojan        | implemented    | yes               |
 | Shadowsocks   | implemented    | yes               |
-| Hy2           | planned        | placeholder only  |
+| Hysteria 2    | implemented    | yes               |
 | TUIC          | planned        | placeholder only  |
 | WireGuard     | planned        | placeholder only  |
 | AnyTLS        | planned        | placeholder only  |

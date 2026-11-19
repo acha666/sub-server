@@ -11,7 +11,7 @@ def test_load_example_files() -> None:
     servers = loader.load_servers()
     keys = loader.load_keys()
 
-    assert len(servers.servers) == 5
+    assert len(servers.servers) == 6
     routed = next(server for server in servers.servers if server.id == "hk-vless-route-14")
     assert routed.endpoint.host == "hk1.example.com"
     assert routed.routing

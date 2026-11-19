@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from sub_server.core.exceptions import UnsupportedProtocolError
+from sub_server.renderers.hysteria2 import Hysteria2Renderer
 from sub_server.renderers.shadowsocks import ShadowsocksRenderer
 from sub_server.renderers.trojan import TrojanRenderer
 from sub_server.renderers.vless import VlessRenderer
@@ -14,6 +15,7 @@ class RendererRegistry:
             "vmess": VmessRenderer(),
             "trojan": TrojanRenderer(),
             "shadowsocks": ShadowsocksRenderer(),
+            "hysteria2": Hysteria2Renderer(),
         }
 
     def get(self, protocol: str):

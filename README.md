@@ -11,6 +11,8 @@ A small but maintainable FastAPI subscription backend for multi-protocol share l
   - VMess
   - Trojan
   - Shadowsocks
+  - Hysteria 2
+- A server can be written as the Xray outbound that connects to it
 - Per-key selection rules:
   - include / exclude by id
   - include / exclude by tag

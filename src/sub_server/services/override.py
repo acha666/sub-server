@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from sub_server.config.xray import expand_outbound
 from sub_server.core.exceptions import ConfigError
 from sub_server.models.server import ServerConfig, ServerDefinition
 from sub_server.utils.deepmerge import deep_merge
@@ -14,7 +15,7 @@ def apply_server_patch(
     server_id: str | None = None,
 ) -> ServerConfig:
     base = server.model_dump(by_alias=True, exclude_none=True)
-    merged = deep_merge(base, patch)
+    merged = deep_merge(base, expand_outbound(patch))
     merged["id"] = server_id or server.id
     return ServerConfig.model_validate(merged)
 
