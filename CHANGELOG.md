@@ -5,6 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Release Please updates this file from Conventional Commits merged into `main`.
 
+## [0.4.0](https://github.com/acha666/sub-server/compare/sub-server-v0.3.1...sub-server-v0.4.0) (2026-11-19)
+
+
+### Features
+
+* add Hysteria 2 links and Xray outbound server definitions ([1049228](https://github.com/acha666/sub-server/commit/104922855bcfbd0611a637e0f8b4324083da97d6))
+
 ## [0.3.1](https://github.com/acha666/sub-server/compare/sub-server-v0.3.0...sub-server-v0.3.1) (2026-08-03)
 
 
